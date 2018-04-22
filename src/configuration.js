@@ -27,6 +27,8 @@ var EasyAutocomplete = (function(scope){
 
 			matchResponseProperty: false,
 
+			setFieldValue:true,
+			
 			list: {
 				sort: {
 					enabled: false,
