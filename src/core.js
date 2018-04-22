@@ -637,7 +637,7 @@ var EasyAutocomplete = (function(scope) {
 							}
 
 							config.get("list").onKeyEnterEvent($field);
-							config.get("list").onChooseEvent($field);
+							config.get("list").onChooseEvent($field, config.get("getValue")(elementsList[selectedElement]));
 
 							selectedElement = -1;
 							hideContainer();
