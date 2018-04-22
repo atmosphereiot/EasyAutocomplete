@@ -36,6 +36,8 @@ var EasyAutocomplete = (function(scope){
 
 			matchResponseProperty: false,
 
+			setFieldValue:true,
+			
 			list: {
 				sort: {
 					enabled: false,
@@ -1059,7 +1061,7 @@ var EasyAutocomplete = (function(scope) {
 								break;
 							}
 
-							config.get("list").onShowListEvent();
+							config.get("list").onShowListEvent($field);
 							
 						})
 						/* List hide animation */
@@ -1086,14 +1088,14 @@ var EasyAutocomplete = (function(scope) {
 								break;
 							}
 
-							config.get("list").onHideListEvent();
+							config.get("list").onHideListEvent($field);
 
 						})
 						.on("selectElement.eac", function() {
 							$elements_container.find("ul li").removeClass("selected");
 							$elements_container.find("ul li").eq(selectedElement).addClass("selected");
 
-							config.get("list").onSelectItemEvent();
+							config.get("list").onSelectItemEvent($field);
 						})
 						.on("loadElements.eac", function(event, listBuilders, phrase) {
 			
@@ -1131,23 +1133,25 @@ var EasyAutocomplete = (function(scope) {
 										$item.find(" > div")
 											.on("click", function() {
 
-												$field.val(elementsValue).trigger("change");
+												if(config.get("setFieldValue")) {
+													$field.val(elementsValue).trigger("change");
+												}
 
 												selectedElement = itemCounter;
 												selectElement(itemCounter);
 
-												config.get("list").onClickEvent();
-												config.get("list").onChooseEvent();
+												config.get("list").onClickEvent($field);
+												config.get("list").onChooseEvent($field, elementsValue);
 											})
 											.mouseover(function() {
 
 												selectedElement = itemCounter;
 												selectElement(itemCounter);	
 
-												config.get("list").onMouseOverEvent();
+												config.get("list").onMouseOverEvent($field);
 											})
 											.mouseout(function() {
-												config.get("list").onMouseOutEvent();
+												config.get("list").onMouseOutEvent($field);
 											})
 											.html(template.build(highlight(elementsValue, phrase), listData[j]));
 									})();
@@ -1160,7 +1164,7 @@ var EasyAutocomplete = (function(scope) {
 
 							$elements_container.append($listContainer);
 
-							config.get("list").onLoadEvent();
+							config.get("list").onLoadEvent($field);
 						});
 
 				})();
@@ -1267,7 +1271,9 @@ var EasyAutocomplete = (function(scope) {
 
 								selectedElement -= 1;
 
-								$field.val(config.get("getValue")(elementsList[selectedElement]));
+								if(config.get("setFieldValue")) {
+									$field.val(config.get("getValue")(elementsList[selectedElement]));
+								}
 
 								selectElement(selectedElement);
 
@@ -1282,7 +1288,9 @@ var EasyAutocomplete = (function(scope) {
 
 								selectedElement += 1;
 
-								$field.val(config.get("getValue")(elementsList[selectedElement]));
+								if(config.get("setFieldValue")) {
+									$field.val(config.get("getValue")(elementsList[selectedElement]));
+								}
 
 								selectElement(selectedElement);
 								
@@ -1449,10 +1457,12 @@ var EasyAutocomplete = (function(scope) {
 
 						if (event.keyCode === 13 && selectedElement > -1) {
 
-							$field.val(config.get("getValue")(elementsList[selectedElement]));
+							if(config.get("setFieldValue")) {
+								$field.val(config.get("getValue")(elementsList[selectedElement]));
+							}
 
-							config.get("list").onKeyEnterEvent();
-							config.get("list").onChooseEvent();
+							config.get("list").onKeyEnterEvent($field);
+							config.get("list").onChooseEvent($field);
 
 							selectedElement = -1;
 							hideContainer();
@@ -1470,7 +1480,7 @@ var EasyAutocomplete = (function(scope) {
 			function bindFocus() {
 				$field.focus(function() {
 
-					if ($field.val() !== "" && elementsList.length > 0) {
+					if ($field.val().length >= config.get("minCharNumber") && elementsList.length > 0) {
 						
 						selectedElement = -1;
 						showContainer();	

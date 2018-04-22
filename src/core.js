@@ -288,7 +288,7 @@ var EasyAutocomplete = (function(scope) {
 												selectElement(itemCounter);
 
 												config.get("list").onClickEvent($field);
-												config.get("list").onChooseEvent($field);
+												config.get("list").onChooseEvent($field, elementsValue);
 											})
 											.mouseover(function() {
 
